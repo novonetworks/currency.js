@@ -1,6 +1,6 @@
-import currency from 'currency.js';
-import * as namedCurrency from 'currency.js';
-import interopCurrency = require('currency.js');
+import currency from '@novonetworks/currency.js';
+import * as namedCurrency from '@novonetworks/currency.js';
+import interopCurrency = require('@novonetworks/currency.js');
 
 const currencyInstance: currency = currency(1.23);
 const currencyInstance2: currency = namedCurrency(1.23);

@@ -425,3 +425,17 @@ test('should symbol visible in suffix with space', t => {
   t.is(c3(2.06).format(), '2.06 @', 'value is not with suffix and space');
   t.is(c3(-2.06).format(), '-2.06 @', 'value is not with suffix and space');
 })
+
+test('should CZK', t => {
+  let CZK = (value) => currency(value, {
+    symbol: 'Kč',
+    decimal: ',',
+    separator: ' ',
+    precision: 2,
+    symbolSuffix: true,
+    formatWithSymbol: true,
+    insertSpace: true
+  })
+
+  t.is(CZK(199.90).format(), '199,90 Kč', 'fail');
+})
