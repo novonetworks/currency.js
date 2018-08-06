@@ -22,7 +22,7 @@ const vedicRegex = /(\d)(?=(\d\d)+\d\b)/g;
 function currency(value, opts) {
   let that = this;
 
-  if(!(that instanceof currency)) {
+  if (!(that instanceof currency)) {
     return new currency(value, opts);
   }
 
@@ -38,7 +38,7 @@ function currency(value, opts) {
 
   // Support vedic numbering systems
   // see: https://en.wikipedia.org/wiki/Indian_numbering_system
-  if(settings.useVedic) {
+  if (settings.useVedic) {
     settings.groups = vedicRegex;
   } else {
     settings.groups = groupRegex;
@@ -51,7 +51,7 @@ function currency(value, opts) {
 
 function parse(value, opts, useRounding = true) {
   let v = 0
-    , { decimal, errorOnInvalid, precision: decimals } = opts
+    , {decimal, errorOnInvalid, precision: decimals} = opts
     , precision = pow(decimals)
     , isNumber = typeof value === 'number';
 
@@ -61,13 +61,13 @@ function parse(value, opts, useRounding = true) {
     let regex = new RegExp('[^-\\d' + decimal + ']', 'g')
       , decimalString = new RegExp('\\' + decimal, 'g');
     v = value
-          .replace(/\((.*)\)/, '-$1')   // allow negative e.g. (1.99)
-          .replace(regex, '')           // replace any non numeric values
-          .replace(decimalString, '.')  // convert any decimal values
-          * precision;                  // scale number to integer value
+        .replace(/\((.*)\)/, '-$1')   // allow negative e.g. (1.99)
+        .replace(regex, '')           // replace any non numeric values
+        .replace(decimalString, '.')  // convert any decimal values
+      * precision;                  // scale number to integer value
     v = v || 0;
   } else {
-    if(errorOnInvalid) {
+    if (errorOnInvalid) {
       throw Error('Invalid Input');
     }
     v = 0;
@@ -87,7 +87,7 @@ currency.prototype = {
    * @returns {currency}
    */
   add(number) {
-    let { intValue, _settings, _precision } = this;
+    let {intValue, _settings, _precision} = this;
     return currency((intValue += parse(number, _settings)) / _precision, _settings);
   },
 
@@ -97,7 +97,7 @@ currency.prototype = {
    * @returns {currency}
    */
   subtract(number) {
-    let { intValue, _settings, _precision } = this;
+    let {intValue, _settings, _precision} = this;
     return currency((intValue -= parse(number, _settings)) / _precision, _settings);
   },
 
@@ -107,7 +107,7 @@ currency.prototype = {
    * @returns {currency}
    */
   multiply(number) {
-    let { intValue, _settings } = this;
+    let {intValue, _settings} = this;
     return currency((intValue *= number) / pow(_settings.precision), _settings);
   },
 
@@ -117,7 +117,7 @@ currency.prototype = {
    * @returns {currency}
    */
   divide(number) {
-    let { intValue, _settings } = this;
+    let {intValue, _settings} = this;
     return currency(intValue /= parse(number, _settings, false), _settings);
   },
 
@@ -128,7 +128,7 @@ currency.prototype = {
    * @returns {array}
    */
   distribute(count) {
-    let { intValue, _precision, _settings } = this
+    let {intValue, _precision, _settings} = this
       , distribution = []
       , split = Math[intValue >= 0 ? 'floor' : 'ceil'](intValue / count)
       , pennies = Math.abs(intValue - (split * count));
@@ -158,7 +158,7 @@ currency.prototype = {
    * @returns {number}
    */
   cents() {
-    let { intValue, _precision } = this;
+    let {intValue, _precision} = this;
     return ~~(intValue % _precision);
   },
 
@@ -168,16 +168,28 @@ currency.prototype = {
    * @returns {string}
    */
   format(useSymbol) {
-    let { formatWithSymbol, symbol, separator, decimal, groups } = this._settings;
+    let {formatWithSymbol, symbol, separator, decimal, groups, symbolSuffix, insertSpace} = this._settings;
 
     // set symbol formatting
     typeof(useSymbol) === 'undefined' && (useSymbol = formatWithSymbol);
 
-    let values = ((useSymbol ? symbol : '') + this).split('.')
+    let values = this.toString().split('.')
       , dollars = values[0]
       , cents = values[1];
 
-    return `${dollars.replace(groups, '$1' + separator)}${cents ? decimal + cents : ''}`;
+    if (useSymbol) {
+      if (symbolSuffix) {
+        dollars.concat(symbol);
+      } else {
+        symbol.concat(dollars);
+      }
+    }
+
+    const space = insertSpace ? ' ' : '';
+    const prefix = useSymbol && !symbolSuffix ? `${symbol}${space}` : '';
+    const suffix = useSymbol && symbolSuffix ? `${space}${symbol}` : '';
+
+    return `${prefix}${dollars.replace(groups, '$1' + separator)}${cents ? decimal + cents : ''}${suffix}`;
   },
 
   /**
@@ -185,7 +197,7 @@ currency.prototype = {
    * @returns {string}
    */
   toString() {
-    let { intValue, _precision, _settings } = this;
+    let {intValue, _precision, _settings} = this;
     return rounding(intValue / _precision, _settings.increment).toFixed(_settings.precision);
   },
 

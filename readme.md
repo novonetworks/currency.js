@@ -31,19 +31,19 @@ This should work for most *reasonable* values of currencies. As long as your cur
 With [npm](https://www.npmjs.com/):
 
 ```sh
-npm install --save currency.js
+npm install --save @novonetworks/currency.js
 ```
 
 With [yarn](https://yarnpkg.com):
 
 ```sh
-yarn add currency.js
+yarn add @novonetworks/currency.js
 ```
 
 Via cdn:
 
 ```html
-<script src="https://unpkg.com/currency.js@~1.1.0/dist/currency.min.js"></script>
+<script src="https://unpkg.com@novonetworks//currency.js@~1.2.5/dist/currency.min.js"></script>
 ```
 
 ### Usage

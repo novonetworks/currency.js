@@ -412,3 +412,16 @@ test('should throw exception with invalid input', t => {
   // eslint-disable-next-line no-undefined
   t.throws(function() { currency(undefined, { errorOnInvalid: true }); }, Error, 'Threw exception');
 });
+
+test('should symbol visible in suffix with space', t => {
+  let c1 = value => currency(value, { symbolSuffix: true, symbol: '@', formatWithSymbol: true });
+  let c2 = value => currency(value, { symbol: '@', formatWithSymbol: true, insertSpace: true });
+  let c3 = value => currency(value, { symbolSuffix: true, symbol: '@', formatWithSymbol: true, insertSpace: true });
+
+  t.is(c1(2.06).format(), '2.06@', 'value is not with suffix');
+  t.is(c1(-2.06).format(), '-2.06@', 'value is not with suffix');
+  t.is(c2(2.06).format(), '@ 2.06', 'value is not with space');
+  t.is(c2(-2.06).format(), '@ -2.06', 'value is not with space');
+  t.is(c3(2.06).format(), '2.06 @', 'value is not with suffix and space');
+  t.is(c3(-2.06).format(), '-2.06 @', 'value is not with suffix and space');
+})
