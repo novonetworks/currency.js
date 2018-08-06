@@ -35,6 +35,6 @@ declare interface currency {
 
 declare const currency : currency.Constructor;
 
-declare module 'currency.js' {
+declare module '@novonetworks/currency.js' {
   export = currency;
 }
